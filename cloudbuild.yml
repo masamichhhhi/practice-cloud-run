@@ -1,0 +1,9 @@
+steps:
+- name: "gcr.io/cloud-builders/docker"
+  args:
+  - build
+  - "--tag=gcr.io/helical-fin-309723/cloud-run-test"
+  - "--file=./Dockerfile.prd"
+  - .
+images:
+- "gcr.io/helical-fin-309723/cloud-run-test"
