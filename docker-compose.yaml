@@ -3,11 +3,32 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./docker/node/Dockerfile
     environment:
       NODE_ENV: development
     ports:
-      - '3000:3000'
+      - '8080:8080'
+    # for apple silicon
+    platform: linux/amd64
     tty: true
     volumes:
       - .:/app
+    environment:
+      - DATABASE_URL=$DATABASE_URL
+  db:
+    # mysql version 8.0 which is compatible with both of Intel and M1 chip
+    image: mysql@sha256:dce31fcdd15aaedb5591aa89f19ec37cb79981af46511781fa41287d88ed0abd
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test-db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+    - 33306:3306
+
+volumes:
+  mysql-data:
